@@ -1,4 +1,8 @@
+# Prevent contributors accidentally committing Composer's binary
 composer.phar
+
+# Composer dependencies -- ignore vendor directory in project root, see
+# http://getcomposer.org/doc/01-basic-usage.md#installing-dependencies
 vendor/
 
 # Commit your application's lock file http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file
