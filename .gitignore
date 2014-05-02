@@ -3,7 +3,7 @@ composer.phar
 
 # Composer dependencies -- ignore vendor directory in project root, see
 # http://getcomposer.org/doc/01-basic-usage.md#installing-dependencies
-vendor/
+/vendor/
 
 # composer.lock is only used in CI for this project, and is ignored
 # when depending on this package. Ignoring it ensures that our CI is as
