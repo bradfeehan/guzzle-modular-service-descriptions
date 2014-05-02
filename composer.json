@@ -1,0 +1,17 @@
+{
+    "name": "bradfeehan/guzzle-modular-service-descriptions",
+    "description": "A better ServiceDescriptionLoader for Guzzle 3.x",
+    "keywords": ["guzzle", "service description"],
+    "license": "MIT",
+    "authors": [
+        { "name": "Brad Feehan", "email": "git@bradfeehan.com" }
+    ],
+    "require": {
+        "php": ">=5.3",
+        "guzzle/guzzle": "~3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~3.7.0",
+        "mockery/mockery": "0.9.0"
+    }
+}
