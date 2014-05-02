@@ -10,3 +10,11 @@ composer.phar
 # close as possible to real-world use
 # See http://getcomposer.org/doc/02-libraries.md#lock-file
 /composer.lock
+
+# PHPUnit test coverage data and other build output will go in /build
+/build/
+
+# PHPUnit custom phpunit.xml test suite description -- this is to allow
+# users to have a local, custom phpunit.xml for use during development,
+# which overrides phpunit.xml.dist
+/phpunit.xml
