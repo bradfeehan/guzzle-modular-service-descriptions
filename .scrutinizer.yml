@@ -11,7 +11,7 @@ tools:
         naming:
           enabled: true
           local_variable: '^[a-z][a-zA-Z0-9]*$'
-          abstract_class_name: ^Abstract|Factory$
+          abstract_class_name: ^.*$
           utility_class_name: 'Utils?$'
           constant_name: '^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$'
           property_name: '^[a-z][a-zA-Z0-9]*$'

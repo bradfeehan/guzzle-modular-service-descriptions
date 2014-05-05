@@ -30,7 +30,7 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
      *
      * @var \BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\ConfigLoaderInterface
      */
-    private $this->configLoader;
+    private $configLoader;
 
 
     /**
