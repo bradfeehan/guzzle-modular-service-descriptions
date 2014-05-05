@@ -6,7 +6,7 @@ use BradFeehan\GuzzleModularServiceDescriptions\ServiceDescriptionLoader;
 use BradFeehan\GuzzleModularServiceDescriptions\Test\Helper\SystemTestCase;
 
 /**
- * @coversNothing
+ * @covers BradFeehan\GuzzleModularServiceDescriptions\ServiceDescriptionLoader
  */
 class ServiceDescriptionLoaderSystemTest extends SystemTestCase
 {
@@ -103,6 +103,49 @@ class ServiceDescriptionLoaderSystemTest extends SystemTestCase
         $this->assertSame('my_string_parameter', $parameter->getName());
         $this->assertSame('string', $parameter->getType());
         $this->assertSame('A string parameter', $parameter->getDescription());
+    }
+
+    public function testLoadingNonModularServiceDescription()
+    {
+        $description = $this->loadFixture('simple/description.json');
+
+        $this->assertInstanceOf(
+            'Guzzle\\Service\\Description\\ServiceDescription',
+            $description
+        );
+
+        $this->assertSame(
+            'Simple service description in JSON',
+            $description->getName()
+        );
+
+        $this->assertSame(
+            'A JSON service description with a single file',
+            $description->getDescription()
+        );
+    }
+
+    public function testLoadingWithAlias()
+    {
+        $loader = $this->loader();
+        $realFile = $this->getFixturePath('modular/json/simple');
+        $loader->addAlias('the alias', $realFile);
+        $description = $loader->load('the alias');
+
+        $this->assertInstanceOf(
+            'Guzzle\\Service\\Description\\ServiceDescription',
+            $description
+        );
+
+        $this->assertSame(
+            'Simple JSON modular service description',
+            $description->getName()
+        );
+
+        $this->assertSame(
+            'A modular service description written in JSON with only one file',
+            $description->getDescription()
+        );
     }
 
     /**

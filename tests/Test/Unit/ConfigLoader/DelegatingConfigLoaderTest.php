@@ -64,6 +64,30 @@ class DelegatingConfigLoaderTest extends UnitTestCase
     }
 
     /**
+     * @covers BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\DelegatingConfigLoader::load
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Couldn't load configuration file 'a_file.lolwut': No configuration loader found for extension 'lolwut'
+     */
+    public function testLoadFileWithInvalidExtension()
+    {
+        $loader1 = $this->loader(array('foo', 'bar'))
+            ->shouldReceive('load')
+                ->with('a_file.bar', array())
+                ->andReturn('$parsed_data')
+            ->getMock();
+
+        $loader2 = $this->loader(array('baz', 'qux'));
+
+        $delegator = $this->mock()
+            ->shouldReceive('load')->passthru()
+            ->shouldReceive('getLoaders')
+                ->andReturn(array($loader1, $loader2))
+            ->getMock();
+
+        $delegator->load('a_file.lolwut');
+    }
+
+    /**
      * Retrieves a mock configuration loader
      *
      * The supported extensions can be set using $extensions.

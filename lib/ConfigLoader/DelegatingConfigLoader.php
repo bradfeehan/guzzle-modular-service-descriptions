@@ -2,6 +2,8 @@
 
 namespace BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader;
 
+use InvalidArgumentException;
+
 /**
  * A configuration loader that delegates to other config loaders
  */
