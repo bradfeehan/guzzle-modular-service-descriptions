@@ -26,6 +26,14 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
 {
 
     /**
+     * The configuration loader to use
+     *
+     * @var \BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\ConfigLoaderInterface
+     */
+    private $this->configLoader;
+
+
+    /**
      * Allows setting the configuration loader to use
      *
      * @param \BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\ConfigLoaderInterface $configLoader
