@@ -7,7 +7,7 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * A configuration loader that loads YAML files
  */
-class YamlConfigLoader implements ConfigLoaderInterface
+class YamlConfigLoader extends FilesystemConfigLoader
 {
 
     /**
@@ -24,8 +24,8 @@ class YamlConfigLoader implements ConfigLoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function load($config, array $options = array())
+    protected function parse($data)
     {
-        return Yaml::parse(file_get_contents($config));
+        return Yaml::parse($data);
     }
 }

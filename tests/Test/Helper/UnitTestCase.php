@@ -55,7 +55,9 @@ abstract class UnitTestCase extends TestCase
      */
     protected function mock()
     {
-        return \Mockery::mock($this->getMockedClass());
+        $mock = \Mockery::mock($this->getMockedClass());
+        $mock->shouldAllowMockingProtectedMethods();
+        return $mock;
     }
 
     /**

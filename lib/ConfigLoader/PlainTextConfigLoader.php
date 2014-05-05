@@ -8,7 +8,7 @@ namespace BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader;
  * This configuration loader returns the entire content of the file
  * as a string. Files should be named with a .txt extension.
  */
-class PlainTextConfigLoader implements ConfigLoaderInterface
+class PlainTextConfigLoader extends FilesystemConfigLoader
 {
 
     /**
@@ -24,8 +24,8 @@ class PlainTextConfigLoader implements ConfigLoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function load($config, array $options = array())
+    protected function parse($data)
     {
-        return rtrim(file_get_contents($config), PHP_EOL);
+        return rtrim($data, PHP_EOL);
     }
 }
