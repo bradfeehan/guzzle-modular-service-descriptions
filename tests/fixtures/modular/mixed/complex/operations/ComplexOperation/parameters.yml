@@ -1,0 +1,4 @@
+my_string_parameter:
+    description: A string parameter
+    type: string
+    location: query

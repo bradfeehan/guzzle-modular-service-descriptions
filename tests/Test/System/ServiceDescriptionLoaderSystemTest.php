@@ -69,6 +69,43 @@ class ServiceDescriptionLoaderSystemTest extends SystemTestCase
     }
 
     /**
+     * @depends testLoadingNestedServiceDescription
+     */
+    public function testLoadingComplexServiceDescription()
+    {
+        $description = $this->loadFixture('modular/mixed/complex');
+
+        $this->assertInstanceOf(
+            'Guzzle\\Service\\Description\\ServiceDescription',
+            $description
+        );
+
+        $this->assertSame(
+            'Nested mixed-type modular service description',
+            $description->getName()
+        );
+
+        $this->assertSame(
+            'A modular service description with nested files in mixed formats',
+            $description->getDescription()
+        );
+
+        $operation = $description->getOperation('ComplexOperation');
+
+        $this->assertInstanceOf(
+            'Guzzle\\Service\\Description\\Operation',
+            $operation
+        );
+
+        $this->assertSame('ComplexOperation', $operation->getName());
+
+        $parameter = $operation->getParam('my_string_parameter');
+        $this->assertSame('my_string_parameter', $parameter->getName());
+        $this->assertSame('string', $parameter->getType());
+        $this->assertSame('A string parameter', $parameter->getDescription());
+    }
+
+    /**
      * Retrieves a new instance of the service description loader
      *
      * @return \BradFeehan\GuzzleModularServiceDescriptions\ServiceDescriptionLoader
