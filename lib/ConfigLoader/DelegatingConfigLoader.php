@@ -27,13 +27,23 @@ class DelegatingConfigLoader implements ConfigLoaderInterface
     }
 
     /**
+     * Retrieves the loaders that this loader delegates to
+     *
+     * @return array
+     */
+    public function getLoaders()
+    {
+        return $this->loaders;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getSupportedExtensions()
     {
         $extensions = array();
 
-        foreach ($this->loaders as $loader) {
+        foreach ($this->getLoaders() as $loader) {
             $extensions = array_merge(
                 $extensions,
                 $loader->getSupportedExtensions()
@@ -50,7 +60,7 @@ class DelegatingConfigLoader implements ConfigLoaderInterface
     {
         $extension = pathinfo($config, PATHINFO_EXTENSION);
 
-        foreach ($this->loaders as $loader) {
+        foreach ($this->getLoaders() as $loader) {
             if (in_array($extension, $loader->getSupportedExtensions())) {
                 return $loader->load($config, $options);
             }
