@@ -95,7 +95,10 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
             );
 
             $content = $this->configLoader->load($file->getPathname());
-            $config += $this->nest($content, $nestPath);
+            $config = array_merge_recursive(
+                $config,
+                $this->nest($content, $nestPath)
+            );
         }
 
         return $config;
