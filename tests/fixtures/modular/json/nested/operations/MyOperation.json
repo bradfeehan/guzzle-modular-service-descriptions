@@ -1,0 +1,10 @@
+{
+    "httpMethod": "GET",
+    "parameters": {
+        "my_integer_parameter": {
+            "description": "An integer parameter",
+            "type": "integer",
+            "location": "query"
+        }
+    }
+}

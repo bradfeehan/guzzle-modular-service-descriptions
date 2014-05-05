@@ -2,7 +2,10 @@
 
 namespace BradFeehan\GuzzleModularServiceDescriptions;
 
+use CallbackFilterIterator;
 use Guzzle\Service\Description\ServiceDescriptionLoader as GuzzleServiceDescriptionLoader;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 /**
  * Loads modular service descriptions
@@ -50,8 +53,89 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
      */
     protected function loadModular($path)
     {
-        // TODO
-        return array();
+        $config = array();
+
+        // Loop over files in $path (recursing into sub-directories)
+        foreach ($this->filesIn($path) as $file) {
+            // Determine the relative path of the current file by
+            // stripping $path from the beginning of the absolute path
+            $relativePath = preg_replace(
+                '#^' . preg_quote($path, '#') . '/#',
+                '',
+                $file->getPathname()
+            );
+
+            $nestPath = preg_replace(
+                '/^(.*?)(:?\/?__index)?\.(:?\w+)$/',
+                '\1',
+                $relativePath
+            );
+
+            $content = parent::loadFile($file->getPathname());
+            $config += $this->nest($content, $nestPath);
+        }
+
+        return $config;
+    }
+
+    /**
+     * Gets all files in a directory, recursing into sub-directories
+     *
+     * This returns an iterator which can be used to iterate over every
+     * file under the given directory. It filters out anything that's
+     * not a regular file, so directories, symlinks, etc. won't be
+     * iterated over.
+     *
+     * @param string $path The path to iterate over
+     *
+     * @return \Iterator
+     */
+    protected function filesIn($path)
+    {
+        return new CallbackFilterIterator(
+            new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($path)
+            ),
+            function ($item) {
+                // Only allow files
+                return $item->isFile() && $item->isReadable();
+            }
+        );
+    }
+
+    /**
+     * Nests an array under a particular path
+     *
+     * As an example:
+     *
+     *   nest(array('foo' => 'bar'), 'baz/qux')
+     *
+     * This will return:
+     *
+     *   array(
+     *       'baz' => array(
+     *           'qux' => array(
+     *               'foo' => 'bar'
+     *           )
+     *       )
+     *   )
+     *
+     * @param mixed  $value The value to put at the given path
+     * @param string $path  The slash-separated path to put the value
+     *
+     * @return array
+     */
+    private function nest($value, $path)
+    {
+        if ($path) {
+            $elements = explode('/', $path);
+
+            foreach (array_reverse($elements) as $element) {
+                $value = array($element => $value);
+            }
+        }
+
+        return $value;
     }
 
     /**
