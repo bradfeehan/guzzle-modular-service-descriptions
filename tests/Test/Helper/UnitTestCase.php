@@ -2,6 +2,8 @@
 
 namespace BradFeehan\GuzzleModularServiceDescriptions\Test\Helper;
 
+use ReflectionClass;
+use ReflectionObject;
 use UnexpectedValueException;
 
 /**
@@ -54,5 +56,37 @@ abstract class UnitTestCase extends TestCase
     protected function mock()
     {
         return \Mockery::mock($this->getMockedClass());
+    }
+
+    /**
+     * Retrieves a new instance of $this->getMockedClass()
+     *
+     * @param array $arguments An array of arguments to pass to the
+     *                         constructor (optional)
+     *
+     * @return object
+     */
+    protected function instance(array $arguments = array())
+    {
+        $class = new ReflectionClass($this->getMockedClass());
+        return $class->newInstanceArgs($arguments);
+    }
+
+    /**
+     * Invokes a private or protected method on any object
+     *
+     * @param object $instance   The object to invoke the method on
+     * @param string $methodName The name of the method to invoke
+     * @param array  $arguments  An array of arguments to pass to the
+     *                           method (optional)
+     *
+     * @return mixed The return value of the method
+     */
+    protected function callPrivateMethod($instance, $methodName, array $arguments = array())
+    {
+        $object = new ReflectionObject($instance);
+        $method = $object->getMethod($methodName);
+        $method->setAccessible(true);
+        return $method->invokeArgs($instance, $arguments);
     }
 }
