@@ -2,6 +2,11 @@
 
 namespace BradFeehan\GuzzleModularServiceDescriptions;
 
+use BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\ConfigLoaderInterface;
+use BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\DefaultGuzzleConfigLoader;
+use BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\DelegatingConfigLoader;
+use BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\PlainTextConfigLoader;
+use BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\YamlConfigLoader;
 use CallbackFilterIterator;
 use Guzzle\Service\Description\ServiceDescriptionLoader as GuzzleServiceDescriptionLoader;
 use RecursiveDirectoryIterator;
@@ -19,6 +24,24 @@ use RecursiveIteratorIterator;
  */
 class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
 {
+
+    /**
+     * Allows setting the configuration loader to use
+     *
+     * @param \BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\ConfigLoaderInterface $configLoader
+     */
+    public function __construct(ConfigLoaderInterface $configLoader = null)
+    {
+        if (!$configLoader) {
+            $configLoader = new DelegatingConfigLoader(array(
+                new DefaultGuzzleConfigLoader(),
+                new PlainTextConfigLoader(),
+                new YamlConfigLoader(),
+            ));
+        }
+
+        $this->configLoader = $configLoader;
+    }
 
     /**
      * {@inheritdoc}
@@ -71,7 +94,7 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
                 $relativePath
             );
 
-            $content = parent::loadFile($file->getPathname());
+            $content = $this->configLoader->load($file->getPathname());
             $config += $this->nest($content, $nestPath);
         }
 
