@@ -1,5 +1,7 @@
 <?php
 
+use BradFeehan\GuzzleModularServiceDescriptions\Test\Helper\SystemTestCase;
+
 error_reporting(-1);
 
 $ds = DIRECTORY_SEPARATOR;
@@ -18,3 +20,6 @@ if (!file_exists($autoloader)) {
 
 // Include the Composer autoloader
 require_once $autoloader;
+
+// Set the fixtures path to use for the system tests
+SystemTestCase::setFixturePath(dirname(__DIR__) . "{$ds}tests{$ds}fixtures");
