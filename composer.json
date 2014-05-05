@@ -13,5 +13,11 @@
     "require-dev": {
         "phpunit/phpunit": "~3.7.0",
         "mockery/mockery": "0.9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "BradFeehan\\GuzzleModularServiceDescriptions\\": "lib",
+            "BradFeehan\\GuzzleModularServiceDescriptions\\Test\\": "tests/Test"
+        }
     }
 }
