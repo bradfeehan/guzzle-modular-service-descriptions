@@ -7,7 +7,7 @@ use BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\DefaultGuzzleConfig
 use BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\DelegatingConfigLoader;
 use BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\PlainTextConfigLoader;
 use BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\YamlConfigLoader;
-use CallbackFilterIterator;
+use BradFeehan\GuzzleModularServiceDescriptions\Utility\FileFilterIterator;
 use Guzzle\Service\Description\ServiceDescriptionLoader as GuzzleServiceDescriptionLoader;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -115,14 +115,10 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
      */
     protected function filesIn($path)
     {
-        return new CallbackFilterIterator(
+        return new FileFilterIterator(
             new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($path)
-            ),
-            function ($item) {
-                // Only allow files
-                return $item->isFile() && $item->isReadable();
-            }
+            )
         );
     }
 
