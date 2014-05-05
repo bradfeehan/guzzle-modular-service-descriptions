@@ -7,6 +7,6 @@ namespace BradFeehan\GuzzleModularServiceDescriptions\Test\Helper;
  *
  * All subclasses of this class should be in tests/Test/System.
  */
-class SystemTestCase extends TestCase
+abstract class SystemTestCase extends TestCase
 {
 }
