@@ -11,9 +11,7 @@ use Guzzle\Service\AbstractConfigLoader;
  * parser delegates to Guzzle's AbstractConfigLoader implementation to
  * load configuration files of these types.
  */
-class DefaultGuzzleConfigLoader
-    extends AbstractConfigLoader
-    implements ConfigLoaderInterface
+class DefaultGuzzleConfigLoader extends AbstractConfigLoader implements ConfigLoaderInterface
 {
 
     /**

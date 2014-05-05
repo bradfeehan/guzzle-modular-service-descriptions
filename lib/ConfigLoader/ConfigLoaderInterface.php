@@ -25,7 +25,7 @@ interface ConfigLoaderInterface extends GuzzleConfigLoaderInterface
     /**
      * Retrieves the file extensions that this config loader supports
      *
-     * @return array An array of strings
+     * @return array<string> An array of strings
      */
     public function getSupportedExtensions();
 }

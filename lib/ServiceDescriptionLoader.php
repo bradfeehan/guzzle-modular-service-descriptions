@@ -36,7 +36,7 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
     /**
      * Allows setting the configuration loader to use
      *
-     * @param \BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\ConfigLoaderInterface $configLoader
+     * @param null|\BradFeehan\GuzzleModularServiceDescriptions\ConfigLoader\ConfigLoaderInterface $configLoader
      */
     public function __construct(ConfigLoaderInterface $configLoader = null)
     {
@@ -80,7 +80,7 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
      *
      * @param string $path Path to the service description to load
      *
-     * @return \Guzzle\Service\Description\ServiceDescription
+     * @return array
      */
     protected function loadModular($path)
     {
@@ -122,7 +122,7 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
      *
      * @param string $path The path to iterate over
      *
-     * @return \Iterator
+     * @return \BradFeehan\GuzzleModularServiceDescriptions\Utility\FileFilterIterator
      */
     protected function filesIn($path)
     {
