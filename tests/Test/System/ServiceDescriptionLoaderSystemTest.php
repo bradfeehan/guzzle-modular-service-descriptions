@@ -90,19 +90,28 @@ class ServiceDescriptionLoaderSystemTest extends SystemTestCase
             $description->getDescription()
         );
 
-        $operation = $description->getOperation('ComplexOperation');
+        $complex = $description->getOperation('ComplexOperation');
 
         $this->assertInstanceOf(
             'Guzzle\\Service\\Description\\Operation',
-            $operation
+            $complex
         );
 
-        $this->assertSame('ComplexOperation', $operation->getName());
+        $this->assertSame('ComplexOperation', $complex->getName());
 
-        $parameter = $operation->getParam('my_string_parameter');
+        $parameter = $complex->getParam('my_string_parameter');
         $this->assertSame('my_string_parameter', $parameter->getName());
         $this->assertSame('string', $parameter->getType());
         $this->assertSame('A string parameter', $parameter->getDescription());
+
+        $grouped = $description->getOperation('GroupedComplexOperation');
+
+        $this->assertInstanceOf(
+            'Guzzle\\Service\\Description\\Operation',
+            $grouped
+        );
+
+        $this->assertSame('GroupedComplexOperation', $grouped->getName());
     }
 
     public function testLoadingNonModularServiceDescription()

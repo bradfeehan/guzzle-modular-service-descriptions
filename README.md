@@ -165,6 +165,23 @@ file is in, rather than the name of the file. It's essentially an
 makes the *directory* the package, rather than the *file*.
 
 
+##### Groups
+
+Files can also be grouped without causing the contents to be nested.
+This is useful for organising a large service description. For example,
+if there are thousands of operations, you'd have to have that many
+files in the `operations` directory. Using groups, the operations can
+be grouped logically inside the `operations` directory.
+
+A group is implemented as a directory ending with `.group`. So you
+could have `Users.group` containing all the operations relating to
+users, etc.
+
+Note that this could cause problems if you wanted to have a key ending
+with `.group`. Please let me know by filing a GitHub issue if this
+causes you any issues, and we can work out a way to compromise.
+
+
 
 ### Loading the service description
 

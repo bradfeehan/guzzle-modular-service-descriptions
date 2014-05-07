@@ -99,11 +99,15 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
 
                     // Ignore trailing __index.foo
                     '/^(.*?)(:?\\/?__index)?\\.(:?\\w+)$/',
+
+                    // Remove path components ending with .group
+                    '#/\\w+\\.group/#',
                 ),
                 // replacements (corresponding with patterns above)
                 array(
                     '',
                     '\\1',
+                    '/',
                 ),
                 $file->getPathname()
             );

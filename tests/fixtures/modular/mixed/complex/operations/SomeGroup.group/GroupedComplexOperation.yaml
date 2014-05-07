@@ -1,0 +1,6 @@
+httpMethod: POST
+parameters:
+    param_1:
+        description: The first parameter
+        type: integer
+        location: query
