@@ -11,6 +11,11 @@ use BradFeehan\GuzzleModularServiceDescriptions\Test\Helper\SystemTestCase;
 class ServiceDescriptionLoaderSystemTest extends SystemTestCase
 {
 
+    /**
+     * The name of the class Operations should be
+     */
+    const OPERATION_CLASS = 'Guzzle\\Service\\Description\\Operation';
+
     public function testLoadingSimpleServiceDescription()
     {
         $description = $this->loadFixture('modular/json/simple');
@@ -54,11 +59,7 @@ class ServiceDescriptionLoaderSystemTest extends SystemTestCase
         );
 
         $operation = $description->getOperation('MyOperation');
-
-        $this->assertInstanceOf(
-            'Guzzle\\Service\\Description\\Operation',
-            $operation
-        );
+        $this->assertInstanceOf(self::OPERATION_CLASS, $operation);
 
         $this->assertSame('MyOperation', $operation->getName());
 
@@ -90,13 +91,12 @@ class ServiceDescriptionLoaderSystemTest extends SystemTestCase
             $description->getDescription()
         );
 
+        // Should be four operations in total
+        $this->assertSame(4, count($description->getOperations()));
+
+        // Complex operation
         $complex = $description->getOperation('ComplexOperation');
-
-        $this->assertInstanceOf(
-            'Guzzle\\Service\\Description\\Operation',
-            $complex
-        );
-
+        $this->assertInstanceOf(self::OPERATION_CLASS, $complex);
         $this->assertSame('ComplexOperation', $complex->getName());
 
         $parameter = $complex->getParam('my_string_parameter');
@@ -106,23 +106,19 @@ class ServiceDescriptionLoaderSystemTest extends SystemTestCase
 
         // Grouped operation
         $grouped = $description->getOperation('GroupedComplexOperation');
-
-        $this->assertInstanceOf(
-            'Guzzle\\Service\\Description\\Operation',
-            $grouped
-        );
-
+        $this->assertInstanceOf(self::OPERATION_CLASS, $grouped);
         $this->assertSame('GroupedComplexOperation', $grouped->getName());
 
         // Nested, grouped operation
         $nested = $description->getOperation('NestedGroupedOperation');
-
-        $this->assertInstanceOf(
-            'Guzzle\\Service\\Description\\Operation',
-            $nested
-        );
-
+        $this->assertInstanceOf(self::OPERATION_CLASS, $nested);
         $this->assertSame('NestedGroupedOperation', $nested->getName());
+
+        // Nested, grouped operation in __index.json
+        $index = $description->getOperation('NestedGroupedIndexOperation');
+        $this->assertInstanceOf(self::OPERATION_CLASS, $index);
+        $this->assertSame('NestedGroupedIndexOperation', $index->getName());
+        $this->assertSame('DELETE', $index->getHttpMethod());
     }
 
     public function testLoadingNonModularServiceDescription()

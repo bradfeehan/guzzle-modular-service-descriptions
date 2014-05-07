@@ -134,12 +134,16 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
                 '/^(.*?)(:?\\/?__index)?\\.(:?\\w+)$/',
 
                 // Remove path components ending with .group
-                '#\\w+\\.group/#',
+                '#\\w+\\.group(/|$)#',
+
+                // Remove any trailing slash
+                '#/+$#',
             ),
             // replacements (corresponding with patterns above)
             array(
                 '',
                 '\\1',
+                '',
                 '',
             ),
             $path
