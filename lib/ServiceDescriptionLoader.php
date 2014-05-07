@@ -93,13 +93,23 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
             $nestPath = $this->getNestPath($file->getPathname(), $path);
 
             $content = $this->configLoader->load($file->getPathname());
-            $config = array_merge_recursive(
-                $config,
-                $this->nest($content, $nestPath)
-            );
+            $config = $this->merge($config, $this->nest($content, $nestPath));
         }
 
         return $config;
+    }
+
+    /**
+     * Merges two arrays together recursively
+     *
+     * @param array $a The first array
+     * @param array $b The second array
+     *
+     * @return array
+     */
+    protected function merge(array $a, array $b)
+    {
+        return array_replace_recursive($b, $a);
     }
 
     /**
