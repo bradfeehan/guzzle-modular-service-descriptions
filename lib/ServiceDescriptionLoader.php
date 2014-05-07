@@ -90,27 +90,7 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
         foreach ($this->filesIn($path) as $file) {
             // Determine the relative path of the current file by
             // stripping $path from the beginning of the absolute path
-            $nestPath = preg_replace(
-                // patterns to remove
-                array(
-                    // strip the leading path (make it relative to the
-                    // root of the service description)
-                    '#^' . preg_quote($path, '#') . '/#',
-
-                    // Ignore trailing __index.foo
-                    '/^(.*?)(:?\\/?__index)?\\.(:?\\w+)$/',
-
-                    // Remove path components ending with .group
-                    '#\\w+\\.group/#',
-                ),
-                // replacements (corresponding with patterns above)
-                array(
-                    '',
-                    '\\1',
-                    '',
-                ),
-                $file->getPathname()
-            );
+            $nestPath = $this->getNestPath($file->getPathname(), $path);
 
             $content = $this->configLoader->load($file->getPathname());
             $config = array_merge_recursive(
@@ -120,6 +100,40 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
         }
 
         return $config;
+    }
+
+    /**
+     * Determines the path to nest content for a file's path name
+     *
+     * @param string $path The absolute path to the file
+     * @param string $base The absolute path to the base directory of
+     *                     the service description this file belongs to
+     *
+     * @return string
+     */
+    protected function getNestPath($path, $base)
+    {
+        return preg_replace(
+            // patterns to remove
+            array(
+                // strip the leading path (make it relative to the
+                // root of the service description)
+                '#^' . preg_quote($base, '#') . '/#',
+
+                // Ignore trailing __index.foo
+                '/^(.*?)(:?\\/?__index)?\\.(:?\\w+)$/',
+
+                // Remove path components ending with .group
+                '#\\w+\\.group/#',
+            ),
+            // replacements (corresponding with patterns above)
+            array(
+                '',
+                '\\1',
+                '',
+            ),
+            $path
+        );
     }
 
     /**
