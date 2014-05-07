@@ -90,16 +90,22 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
         foreach ($this->filesIn($path) as $file) {
             // Determine the relative path of the current file by
             // stripping $path from the beginning of the absolute path
-            $relativePath = preg_replace(
-                '#^' . preg_quote($path, '#') . '/#',
-                '',
-                $file->getPathname()
-            );
-
             $nestPath = preg_replace(
-                '/^(.*?)(:?\/?__index)?\.(:?\w+)$/',
-                '\1',
-                $relativePath
+                // patterns to remove
+                array(
+                    // strip the leading path (make it relative to the
+                    // root of the service description)
+                    '#^' . preg_quote($path, '#') . '/#',
+
+                    // Ignore trailing __index.foo
+                    '/^(.*?)(:?\\/?__index)?\\.(:?\\w+)$/',
+                ),
+                // replacements (corresponding with patterns above)
+                array(
+                    '',
+                    '\\1',
+                ),
+                $file->getPathname()
             );
 
             $content = $this->configLoader->load($file->getPathname());
