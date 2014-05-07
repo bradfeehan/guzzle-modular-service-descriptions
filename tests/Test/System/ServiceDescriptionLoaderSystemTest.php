@@ -104,6 +104,7 @@ class ServiceDescriptionLoaderSystemTest extends SystemTestCase
         $this->assertSame('string', $parameter->getType());
         $this->assertSame('A string parameter', $parameter->getDescription());
 
+        // Grouped operation
         $grouped = $description->getOperation('GroupedComplexOperation');
 
         $this->assertInstanceOf(
@@ -112,6 +113,16 @@ class ServiceDescriptionLoaderSystemTest extends SystemTestCase
         );
 
         $this->assertSame('GroupedComplexOperation', $grouped->getName());
+
+        // Nested, grouped operation
+        $nested = $description->getOperation('NestedGroupedOperation');
+
+        $this->assertInstanceOf(
+            'Guzzle\\Service\\Description\\Operation',
+            $nested
+        );
+
+        $this->assertSame('NestedGroupedOperation', $nested->getName());
     }
 
     public function testLoadingNonModularServiceDescription()
