@@ -83,6 +83,47 @@ class ServiceDescriptionLoaderTest extends UnitTestCase
     }
 
     /**
+     * @covers BradFeehan\GuzzleModularServiceDescriptions\ServiceDescriptionLoader::merge
+     * @dataProvider dataGetNestPath
+     */
+    public function testGetNestPath($path, $base, $expectedOutput)
+    {
+        $mock = $this->mock()
+            ->shouldReceive('getNestPath')->passthru()
+            ->getMock();
+
+        $output = $mock->getNestPath($path, $base);
+
+        $this->assertSame($expectedOutput, $output);
+    }
+
+    public function dataGetNestPath()
+    {
+        return array(
+            array(
+                '/foo/bar/baz',
+                '/foo/bar',
+                'baz',
+            ),
+            array(
+                '/foo/bar/baz/qux/__index.foo',
+                '/foo/bar',
+                'baz/qux',
+            ),
+            array(
+                '/foo/bar/baz/qux/foo.group/__index.lol',
+                '/foo/bar',
+                'baz/qux',
+            ),
+            array(
+                '/foo/bar/baz/qux/abc.group/def.group/__index.lol',
+                '/foo/bar',
+                'baz/qux',
+            ),
+        );
+    }
+
+    /**
      * Calls the "merge" function on a mock of the system under test
      */
     private function merge(array $a, array $b)
