@@ -11,6 +11,7 @@ use BradFeehan\GuzzleModularServiceDescriptions\Utility\FileFilterIterator;
 use Guzzle\Service\Description\ServiceDescriptionLoader as GuzzleServiceDescriptionLoader;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use RuntimeException;
 
 /**
  * Loads modular service descriptions
@@ -224,5 +225,98 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
         // a directory as a service description, so if it's a directory
         // this class should handle it (because Guzzle sure can't).
         return is_dir($filename);
+    }
+
+    /**
+     * Sorts the config so that dependencies are defined before use
+     *
+     * Guzzle requires things to be defined before they're used as the
+     * target of an "extends" declaration. This method sorts the config
+     * so that this is the case. This is called a topological sort.
+     *
+     * @param array $config The configuration to sort
+     *
+     * @return array The sorted configuration
+     */
+    protected function sortConfig(array $config)
+    {
+        // Sort operations
+        if (isset($config['operations'])) {
+            $operations = $config['operations'];
+            $nodes = array();
+
+            // Create empty dependencies array
+            foreach (array_keys($operations) as $key) {
+                $nodes[$key] = array(
+                    'in'  => array(), // inbound dependencies
+                    'out' => array(), // outbound dependencies
+                );
+            }
+
+            // Populate dependencies
+            foreach ($operations as $key => $operation) {
+                if (isset($operation['extends'])) {
+                    // This key depends on the thing being extended
+                    $nodes[$key]['in'][] = $operation['extends'];
+
+                    // The thing being extended depends on this key
+                    $nodes[$operation['extends']]['out'][] = $key;
+                }
+            }
+
+            // Build up $independent
+            $independent = array();
+            foreach ($nodes as $key => $node) {
+                if (empty($node['in'])) {
+                    $independent[] = $key;
+                }
+            }
+
+            // While we have nodes with no inbound edges, remove it
+            // from the graph and add it to the end of the list
+            $sorted = array();
+            while (!empty($independent)) {
+                $key = array_shift($independent);
+                $sorted[$key] = $operations[$key];
+
+                // Go over this node's dependencies
+                foreach ($nodes[$key]['out'] as $dependency) {
+                    $nodes[$dependency]['in'] = array_diff(
+                        $nodes[$dependency]['in'],
+                        array($key)
+                    );
+
+                    // If the dependency has all of its inbound deps...
+                    if (empty($nodes[$dependency]['in'])) {
+                        // ...it's ready to be processed, add it to $independent.
+                        $independent[] = $dependency;
+                    }
+                }
+
+                $nodes[$key]['out'] = array();
+            }
+
+            foreach ($nodes as $node) {
+                if (!empty($node['in']) or !empty($node['out'])) {
+                    throw new RuntimeException(
+                        "Couldn't sort graph, cycle detected!"
+                    );
+                }
+            }
+
+            $config['operations'] = $sorted;
+        }
+
+        return $config;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * Overridden to sort the $config array based on dependencies
+     */
+    protected function build($config, array $options)
+    {
+        return parent::build($this->sortConfig($config), $options);
     }
 }

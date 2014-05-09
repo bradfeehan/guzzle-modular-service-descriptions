@@ -124,6 +124,74 @@ class ServiceDescriptionLoaderTest extends UnitTestCase
     }
 
     /**
+     * @covers BradFeehan\GuzzleModularServiceDescriptions\ServiceDescriptionLoader::sortConfig
+     * @expectedException RuntimeException
+     */
+    public function testSortConfigInvalid()
+    {
+        $mock = $this->mock()
+            ->shouldReceive('sortConfig')->passthru()
+            ->getMock();
+
+        $output = $mock->sortConfig(array(
+            'operations' => array(
+                'operation1' => array('extends' => 'operation2'),
+                'operation2' => array('extends' => 'operation1'),
+            ),
+        ));
+    }
+
+    /**
+     * @covers BradFeehan\GuzzleModularServiceDescriptions\ServiceDescriptionLoader::sortConfig
+     * @dataProvider dataSortConfig
+     */
+    public function testSortConfig($input, $expectedOutput)
+    {
+        $mock = $this->mock()
+            ->shouldReceive('sortConfig')->passthru()
+            ->getMock();
+
+        $output = $mock->sortConfig($input);
+
+        $this->assertSame($expectedOutput, $output);
+    }
+
+    public function dataSortConfig()
+    {
+        return array(
+            array(
+                // input
+                array(
+                    'abc' => 'def',
+                    'operations' => array(
+                        'operation2' => array(
+                            'extends' => 'operation1',
+                        ),
+                        'operation1' => array(
+                            'foo' => 'bar',
+                            'baz' => 'qux',
+                        ),
+                    ),
+                ),
+                // expected output
+                array(
+                    'abc' => 'def',
+                    'operations' => array(
+                        'operation1' => array(
+                            'foo' => 'bar',
+                            'baz' => 'qux',
+                        ),
+                        'operation2' => array(
+                            'extends' => 'operation1',
+                        ),
+                    ),
+                ),
+            ),
+        );
+    }
+
+
+    /**
      * Calls the "merge" function on a mock of the system under test
      */
     private function merge(array $a, array $b)
