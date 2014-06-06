@@ -124,21 +124,26 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
      */
     protected function getNestPath($path, $base)
     {
+        $ds = preg_quote(DIRECTORY_SEPARATOR);
+
         return preg_replace(
             // patterns to remove
             array(
                 // strip the leading path (make it relative to the
                 // root of the service description)
-                '#^' . preg_quote($base, '#') . '/#',
+                '#^' . preg_quote($base, '#') . $ds . '#',
 
                 // Ignore trailing __index.foo
-                '/^(.*?)(:?\\/?__index)?\\.(:?\\w+)$/',
+                '/^(.*?)(:?' . $ds . '?__index)?\\.(:?\\w+)$/',
 
                 // Remove path components ending with .group
-                '#\\w+\\.group(/|$)#',
+                '#\\w+\\.group(' . $ds . '|$)#',
 
                 // Remove any trailing slash
-                '#/+$#',
+                '#' . $ds . '+$#',
+
+                // Translate any remaining backslash delimiters (Windows)
+                '#\\\\#'
             ),
             // replacements (corresponding with patterns above)
             array(
@@ -146,6 +151,7 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
                 '\\1',
                 '',
                 '',
+                '/'
             ),
             $path
         );
