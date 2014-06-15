@@ -124,7 +124,7 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
      */
     protected function getNestPath($path, $base)
     {
-        $ds = preg_quote(DIRECTORY_SEPARATOR);
+        $ds = preg_quote(DIRECTORY_SEPARATOR, '#');
 
         return preg_replace(
             // patterns to remove
@@ -134,7 +134,7 @@ class ServiceDescriptionLoader extends GuzzleServiceDescriptionLoader
                 '#^' . preg_quote($base, '#') . $ds . '#',
 
                 // Ignore trailing __index.foo
-                '/^(.*?)(:?' . $ds . '?__index)?\\.(:?\\w+)$/',
+                '#^(.*?)(:?' . $ds . '?__index)?\\.(:?\\w+)$#',
 
                 // Remove path components ending with .group
                 '#\\w+\\.group(' . $ds . '|$)#',
